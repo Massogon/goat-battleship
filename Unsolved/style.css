@@ -1,0 +1,76 @@
+body {
+    background-color: #808080; /* Set the background color to gray */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh;
+    margin: 0;
+    flex-direction: column; /* Stack elements vertically */
+}
+
+h1 {
+    font-size: 4em; /* Set the font size to 4 times the default */
+    color: black; /* Set the color to black */
+    margin-bottom: 20px; /* Add space below the header */
+    font-family: 'Comic Sans MS', cursive; /* Set the font family to Comic Sans MS */
+}
+  
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(10, 50px); /* Set the width of each column to 50px */
+    grid-template-rows: repeat(10, 50px); /* Set the height of each row to 50px */
+    gap: 1px;
+    border: 1px solid black;
+}
+  
+.grid-item {
+    background-color: rgb(55, 55, 255); /* Set the background color to blue */
+    border: 1px solid black;
+    text-align: center;
+    width: 50px; /* Ensure each cell is a perfect square */
+    height: 50px; /* Ensure each cell is a perfect square */
+}
+  
+.grid-container + .grid-container {
+    margin-top: 20px; /* Add some space between grid containers */
+}
+  
+.container {
+    margin-top: 20px;
+}
+  
+button, input[type="text"] {
+    margin: 5px;
+    padding: 10px;
+}
+  
+
+/* Style for the fixed window */
+.fixed-window {
+    position: fixed;
+    top: 50px; /* Adjust the top position as needed */
+    right: 20px; /* Adjust the right position as needed */
+    width: 20%; /* Set the width to take up all horizontal space except for grid containers */
+    height: 90%; /* Set the height to take up all vertical space except for the header */
+    background-color: rgb(82, 82, 82);
+    border: 1px solid #000; /* Add border */
+    overflow-y: scroll; /* Enable vertical scrolling */
+    padding: 10px; /* Add padding */
+    user-select: none;
+}
+
+
+  
+  /* Style for each box */
+.box {
+    background-color: #b5b5b5; /* Set background color */
+    border: 2px solid #ccc; /* Add border */
+    margin-bottom: 10px; /* Add space between boxes */
+    padding: 10px; /* Add padding */
+}
+
+
+.box:hover {
+    background-color: #9a9a9a; /* Change background color when hovered over */
+    border-color: #000;
+}
