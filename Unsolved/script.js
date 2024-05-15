@@ -68,7 +68,7 @@ let aiGuess;
 let lastHoveredTile;
 let selectedShip;
 let shipName;
-const gameStateElement = document.querySelector('.gameState');
+let gameStateElement
 const fixedWindow = document.querySelector('.fixed-window');
 
 function createGrid(containerId) {
@@ -257,6 +257,7 @@ function newGame(difficulty) {
 
 window.onload = function() {
     // This runs instantly, do NOT make another window.onload, everything will burn.
+    gameStateElement = document.querySelector('.gameState');
     createGrid('gridContainer1');
     createGrid('gridContainer2');
     gridContainer1 = document.getElementById("gridContainer1");
