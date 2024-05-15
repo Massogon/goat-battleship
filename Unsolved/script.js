@@ -259,6 +259,8 @@ window.onload = function() {
     // This runs instantly, do NOT make another window.onload, everything will burn.
     createGrid('gridContainer1');
     createGrid('gridContainer2');
+    gridContainer1 = document.getElementById("gridContainer1");
+    gridContainer2 = document.getElementById("gridContainer2");
     newGame('easy')
     let count = 0;
     for (let ship in battleships) {
@@ -267,8 +269,6 @@ window.onload = function() {
         count++;
     };
     createFixedBox();
-    gridContainer1 = document.getElementById("gridContainer1");
-    gridContainer2 = document.getElementById("gridContainer2");
     gridContainer2.addEventListener('mouseover', previewShip);
     gridContainer2.addEventListener('mouseout', removePreview);
 };
