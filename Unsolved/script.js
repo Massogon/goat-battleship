@@ -68,7 +68,8 @@ let aiGuess;
 let lastHoveredTile;
 let selectedShip;
 let shipName;
-let gameStateElement
+let gameStateElement;
+let gameWin;
 const fixedWindow = document.querySelector('.fixed-window');
 
 function createGrid(containerId) {
@@ -192,13 +193,10 @@ function newGame(difficulty) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      ]
-    
+    ]
 
-
-      function enemyAIFunction() {
+    function enemyAIFunction() {
         if (difficulty) {
-            
             switch (difficulty) { // Still a W.I.P.
                 case "easy":
                     aiGuess = [
@@ -217,19 +215,10 @@ function newGame(difficulty) {
                     break;
                     
                 case "medium":
-    
-    
-    
-    
                     break;
-    
                 case "hard":
-    
-    
-    
                     break;
             }
-
         } else { // this should never happen, if it does the world will end
             return false;
         }
@@ -239,18 +228,15 @@ function newGame(difficulty) {
     fixedWindow.innerHTML = '<h2>Fixed Window</h2>';
     createFixedBox();
     
-
     gridContainer1.querySelectorAll('.grid-item').forEach(cell => {
         cell.dataset.state = 0;
         cell.style.backgroundColor = '';
     });
- 
-    let gridContainer2 = document.getElementById('gridContainer2');
+    
     gridContainer2.querySelectorAll('.grid-item').forEach(cell => {
         cell.dataset.state = 0;
         cell.style.backgroundColor = '';
     });
-
 
     gridContainer2.removeEventListener('mouseover', previewShip);
     gridContainer2.removeEventListener('mouseout', removePreview);
