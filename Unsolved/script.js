@@ -89,14 +89,19 @@ function createGrid(containerId) {
             if (event.target.classList.contains('grid-item') && gameStarted) {
                 let row = parseInt(event.target.dataset.row);
                 let col = parseInt(event.target.dataset.column);
-                if (enemyBoard[row][col] === 1) {
-                    event.target.style.backgroundColor = 'red'; 
-                    const position = (row * 10) + col;
-                    shipdestroyer(position, event.target.dataset.object, "ai", "plr")
-                } else {
-                    event.target.style.backgroundColor = 'gray'; 
+                if (event.target.dataset.state === '0') {
+                    event.target.dataset.state = 1
+                    if (enemyBoard[row][col] === 1) {
+                        event.target.style.backgroundColor = 'red'; 
+                        const position = (row * 10) + col;
+                        shipdestroyer(position, event.target.dataset.object, "ai", "plr")
+                    } else {
+                        event.target.style.backgroundColor = 'gray'; 
+                    }
+                    if (gameStarted) {
+                        enemyAttack()
+                    };
                 }
-                enemyAttack()
             }
         });
     }
@@ -132,7 +137,6 @@ function enemyAttack() {
     }
     aiGuess[randomNumber] = aiGuess[enemyGuessMathHelper]
 };
-
 
 function createFixedBox() {
     let battleshipsArray = Object.keys(battleshipInventory);
@@ -340,6 +344,7 @@ function placeShip(event) {
 function enemyShipPlacer() {
     const shipSizes = [2, 3, 3, 4, 5];
     const shipNames = ["destroyer", "submarine", "cruiser", "battleship", "aircraftCarrier"]
+    let numb = 0;
     
     function placeEnemyShip(shipSize) {
         const isHorizontal = Math.random() < 0.5;
@@ -370,8 +375,8 @@ function enemyShipPlacer() {
     
         if (isValid) {
 
-            if (!battleshipShips.ai[shipNames]) {
-                battleshipShips.ai[shipNames] = [];
+            if (!battleshipShips.ai[shipNames[numb]]) {
+                battleshipShips.ai[shipNames[numb]] = [];
             }
 
             let position
@@ -380,20 +385,21 @@ function enemyShipPlacer() {
                 if (isHorizontal) {
                     let square = gridContainer1.querySelector(`.grid-item[data-row="${row}"][data-column="${col + i}"]`);
                     enemyBoard[row][col + i] = 1;
-                    square.dataset.object = shipNames;
+                    square.dataset.object = shipNames[numb];
                     
                     square
                     position = parseInt(row) * 10 + parseInt(col + i);
-                    battleshipShips.ai[shipNames].push(position)
+                    battleshipShips.ai[shipNames[numb]].push(position)
                 } else {
                     let square = gridContainer1.querySelector(`.grid-item[data-row="${row + i}"][data-column="${col}"]`);
                     enemyBoard[row + i][col] = 1;
-                    square.dataset.object = shipNames;
+                    square.dataset.object = shipNames[numb];
 
                     position = parseInt(row + i) * 10 + parseInt(col);
-                    battleshipShips.ai[shipNames].push(position)
+                    battleshipShips.ai[shipNames[numb]].push(position)
                 }
             }
+            numb ++;
         } else {
             placeEnemyShip(shipSize);
         }
@@ -444,9 +450,8 @@ function previewShip(event) {
     }
 };
 
-
 document.addEventListener('keydown', function(event) {
-    if (event.key === 'r' || event.key === 'R') {
+    if ((event.key === 'r' || event.key === 'R') && !gameStarted) {
         removePreview();
         rotateShip();
         if (lastHoveredTile) {
@@ -455,9 +460,6 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-
-
-
 function rotateShip() {
     if (selectedShip) {
         selectedShip.size = selectedShip.size[0].map((_, colIndex) =>
@@ -465,7 +467,6 @@ function rotateShip() {
         );
     }
 };
-
 
 function removePreview() {
     let cells = document.querySelectorAll('#gridContainer2 .grid-item');
