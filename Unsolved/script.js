@@ -120,6 +120,7 @@ function shipdestroyer(num, name, player, winner) {
                 gameStateElement.textContent = "You lose.";
             }
             gameStarted = false
+            gameWin = true
         }
     }
 };
@@ -176,6 +177,7 @@ function newGame(difficulty) {
     battleshipShips.plr = {};
     battleshipShips.ai = {};
     gameStarted = false
+    gameWin = false
     gameStateElement.textContent = 'Placement';
     let previousSelection = document.querySelector('.box.selected');
     if (previousSelection) {
@@ -225,7 +227,7 @@ function newGame(difficulty) {
     }
     enemyAIFunction()
     
-    fixedWindow.innerHTML = '<h2>Fixed Window</h2>';
+    fixedWindow.innerHTML = '<h2>Battleships</h2>';
     createFixedBox();
     
     gridContainer1.querySelectorAll('.grid-item').forEach(cell => {
@@ -329,68 +331,109 @@ function placeShip(event) {
 
 function enemyShipPlacer() {
     const shipSizes = [2, 3, 3, 4, 5];
-    const shipNames = ["destroyer", "submarine", "cruiser", "battleship", "aircraftCarrier"]
+    const shipNames = ["destroyer", "submarine", "cruiser", "battleship", "aircraftCarrier"];
     let numb = 0;
     
     function placeEnemyShip(shipSize) {
         const isHorizontal = Math.random() < 0.5;
     
-        let row, col;
-        if (isHorizontal) {
-            row = Math.floor(Math.random() * 10);
-            col = Math.floor(Math.random() * (10 - shipSize + 1));
-        } else {
-            row = Math.floor(Math.random() * (10 - shipSize + 1));
-            col = Math.floor(Math.random() * 10);
+        let listOfPossibleShips = []
+
+        for (let row = 0; row < enemyBoard.length; row++) {
+            for (let col = 0; col < enemyBoard[row].length; col++) {
+                let canPlace = true;
+
+                // Check right
+                if (col + shipSize <= 10) {
+                    for (let i = 0; i < shipSize; i++) {
+                        if (enemyBoard[row][col + i] !== 0) {
+                            canPlace = false;
+                            break;
+                        }
+                    }
+                    if (canPlace) {
+                        let temp = [];
+                        for (let i = 0; i < shipSize; i++) {
+                            temp.push([row, col + i]);
+                        }
+                        listOfPossibleShips.push(temp);
+                    }
+
+                    canPlace = true;
+                }
+        
+                // Check left
+                if (col - shipSize >= -1) {
+                    for (let i = 0; i < shipSize; i++) {
+                        if (col - i < 0 || enemyBoard[row][col - i] !== 0) {
+                            canPlace = false;
+                            break;
+                        }
+                    }
+                    if (canPlace) {
+                        let temp = [];
+                        for (let i = 0; i < shipSize; i++) {
+                            temp.push([row, col - i]);
+                        }
+                        listOfPossibleShips.push(temp);
+                    }
+
+                    canPlace = true;
+                }
+        
+                // Check down
+                if (row + shipSize <= 10) {
+                    for (let i = 0; i < shipSize; i++) {
+                        if (enemyBoard[row + i][col] !== 0) {
+                            canPlace = false;
+                            break;
+                        }
+                    }
+                    if (canPlace) {
+                        let temp = [];
+                        for (let i = 0; i < shipSize; i++) {
+                            temp.push([row + i, col]);
+                        }
+                        listOfPossibleShips.push(temp);
+                    }
+
+                    canPlace = true;
+                }
+        
+                // Check up
+                if (row - shipSize >= -1) {
+                    for (let i = 0; i < shipSize; i++) {
+                        if (row - i < 0 || enemyBoard[row - i][col] !== 0) {
+                            canPlace = false;
+                            break;
+                        }
+                    }
+                    if (canPlace) {
+                        let temp = [];
+                        for (let i = 0; i < shipSize; i++) {
+                            temp.push([row - i, col]);
+                        }
+                        listOfPossibleShips.push(temp);
+                    }
+                }
+            }
         }
-    
-        let isValid = true;
+        
+        if (!battleshipShips.ai[shipNames[numb]]) {
+            battleshipShips.ai[shipNames[numb]] = [];
+        }
+
+        let position
+        const ship = listOfPossibleShips[Math.floor(Math.random() * listOfPossibleShips.length)]
         for (let i = 0; i < shipSize; i++) {
-            if (isHorizontal) {
-                if (enemyBoard[row][col + i] !== 0) {
-                    isValid = false;
-                    break;
-                }
-            } else {
-                if (enemyBoard[row + i][col] !== 0) {
-                    isValid = false;
-                    break;
-                }
-            }
+            let square = gridContainer1.querySelector(`.grid-item[data-row="${ship[i][0]}"][data-column="${ship[i][1]}"]`);
+            enemyBoard[ship[i][0]][ship[i][1]] = 1;
+            square.dataset.object = shipNames[numb];
+            position = parseInt(ship[i][0]) * 10 + parseInt(ship[i][1]);
+            battleshipShips.ai[shipNames[numb]].push(position)
         }
-    
-        if (isValid) {
-
-            if (!battleshipShips.ai[shipNames[numb]]) {
-                battleshipShips.ai[shipNames[numb]] = [];
-            }
-
-            let position
-
-            for (let i = 0; i < shipSize; i++) {
-                if (isHorizontal) {
-                    let square = gridContainer1.querySelector(`.grid-item[data-row="${row}"][data-column="${col + i}"]`);
-                    enemyBoard[row][col + i] = 1;
-                    square.dataset.object = shipNames[numb];
-                    
-                    square
-                    position = parseInt(row) * 10 + parseInt(col + i);
-                    battleshipShips.ai[shipNames[numb]].push(position)
-                } else {
-                    let square = gridContainer1.querySelector(`.grid-item[data-row="${row + i}"][data-column="${col}"]`);
-                    enemyBoard[row + i][col] = 1;
-                    square.dataset.object = shipNames[numb];
-
-                    position = parseInt(row + i) * 10 + parseInt(col);
-                    battleshipShips.ai[shipNames[numb]].push(position)
-                }
-            }
-            numb ++;
-        } else {
-            placeEnemyShip(shipSize);
-        }
-    }    
-    // Loop through each ship size, unoptimal but I am too lazy to make a perfect ai ship placer
+        numb ++;
+    }
     shipSizes.forEach(shipSize => {
         placeEnemyShip(shipSize)
     });
@@ -437,7 +480,7 @@ function previewShip(event) {
 };
 
 document.addEventListener('keydown', function(event) {
-    if ((event.key === 'r' || event.key === 'R') && !gameStarted) {
+    if ((event.key === 'r' || event.key === 'R') && !gameStarted && !gameWin) {
         removePreview();
         rotateShip();
         if (lastHoveredTile) {
