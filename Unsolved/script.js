@@ -95,7 +95,7 @@ function createGrid(containerId) {
                     if (enemyBoard[row][col] === 1) {
                         event.target.style.backgroundColor = 'red'; 
                         const position = (row * 10) + col;
-                        shipdestroyer(position, event.target.dataset.object, "ai", "plr")
+                        shipDestroyer(position, event.target.dataset.object, "ai", "plr")
                     } else {
                         event.target.style.backgroundColor = 'gray'; 
                     }
@@ -108,7 +108,7 @@ function createGrid(containerId) {
     }
 };
 
-function shipdestroyer(num, name, player, winner) {
+function shipDestroyer(num, name, player, winner) {
     battleshipShips[player][name] = battleshipShips[player][name].filter(number => number !== num);
     if (battleshipShips[player][name].length === 0) {
         delete battleshipShips[player][name]
@@ -132,7 +132,7 @@ function enemyAttack() {
     let targetGridItem = gridItems[aiGuess[randomNumber]];
     if (targetGridItem.dataset.state === '1') {
         targetGridItem.style.backgroundColor = 'red';
-        shipdestroyer(aiGuess[randomNumber], targetGridItem.dataset.object, "plr", "ai")
+        shipDestroyer(aiGuess[randomNumber], targetGridItem.dataset.object, "plr", "ai")
     } else {
         targetGridItem.style.backgroundColor = 'gray';
     }
@@ -215,11 +215,28 @@ function newGame(difficulty) {
                     break;
                     
                 case "medium":
+                // if (enemyAttack == true) {
+                //     console.log("hello");
+                // }else{
+                //     aiGuess = [
+                //         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                //         10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                //         20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                //         30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+                //         40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+                //         50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+                //         60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+                //         70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+                //         80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+                //         90, 91, 92, 93, 94, 95, 96, 97, 98, 99
+                //     ];
+                //     enemyGuessMathHelper = 100
+                // }
                     break;
                 case "hard":
                     break;
             }
-        } else { // this should never happen, if it does the world will end
+        } else { // This is a bug catch, if game state is found here create issue to resolve concern
             return false;
         }
     }
@@ -246,7 +263,7 @@ function newGame(difficulty) {
 };
 
 window.onload = function() {
-    // This runs instantly, do NOT make another window.onload, everything will burn.
+    // This runs instantly, do NOT make another window.onload
     gameStateElement = document.querySelector('.gameState');
     createGrid('gridContainer1');
     createGrid('gridContainer2');
@@ -390,7 +407,7 @@ function enemyShipPlacer() {
             placeEnemyShip(shipSize);
         }
     }    
-    // Loop through each ship size, unoptimal but I am too lazy to make a perfect ai ship placer
+    // Loops through each ship size, poss. needs refinement 
     shipSizes.forEach(shipSize => {
         placeEnemyShip(shipSize)
     });
@@ -415,7 +432,7 @@ function previewShip(event) {
                                 overlaps = true;
                                 cell.style.backgroundColor = 'red';
                             } else if (cell.style.backgroundColor !== 'red') {
-                                cell.style.backgroundColor = 'lightgray';
+                                cell.style.backgroundColor = 'lightGray';
                             }
                         } else {
                             offBoard = true;
@@ -427,7 +444,7 @@ function previewShip(event) {
             if (offBoard) {
                 let cells = document.querySelectorAll('#gridContainer2 .grid-item');
                 cells.forEach(cell => {
-                    if (cell.style.backgroundColor === 'lightgray') {
+                    if (cell.style.backgroundColor === 'lightGray') {
                         cell.style.backgroundColor = 'red';
                     }
                 });
@@ -462,5 +479,5 @@ function removePreview() {
 };
 
 document.getElementById('btnNewGame').addEventListener('click', function() {
-    newGame("easy"); // Forced to start new game on easy as its the only difficulty to exist
+    newGame("easy"); // when click event on button is present newGame resets all states and allows new user input for difficulty 
 });
