@@ -70,6 +70,8 @@ let selectedShip;
 let shipName;
 let gameStateElement;
 let gameWin;
+let aiDifficulty;
+let mediumDifficultyArray = [];
 const fixedWindow = document.querySelector('.fixed-window');
 
 function createGrid(containerId) {
@@ -125,20 +127,64 @@ function shipdestroyer(num, name, player, winner) {
     }
 };
 
-function enemyAttack() {
-    const randomNumber = Math.floor(Math.random() * enemyGuessMathHelper)
-    enemyGuessMathHelper--
-    let gridItems = gridContainer2.getElementsByClassName("grid-item");
+function getNeighboringTiles(row, col) {
+    let neighbors = [];
+    const directions = [
+        [-1, 0], [1, 0], // Up, Down
+        [0, -1], [0, 1], // Left, Right
+    ];
 
-    let targetGridItem = gridItems[aiGuess[randomNumber]];
+    directions.forEach(direction => {
+        let newRow = row + direction[0];
+        let newCol = col + direction[1];
+        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
+            neighbors.push(newRow * 10 + newCol);
+        }
+    });
+
+    return neighbors;
+}
+
+function enemyAttack() {
+    let gridItems = gridContainer2.getElementsByClassName("grid-item");
+    let targetGridItem
+    let randomNumber
+    let selecting
+    if (aiDifficulty === "medium" && mediumDifficultyArray.length > 0) {
+        randomNumber = Math.floor(Math.random() * mediumDifficultyArray.length)
+        console.log(mediumDifficultyArray[randomNumber])
+        console.log(mediumDifficultyArray)
+        targetGridItem = gridItems[mediumDifficultyArray[randomNumber]]
+        selecting = mediumDifficultyArray[randomNumber]
+        mediumDifficultyArray.splice(randomNumber, 1);
+        console.log(mediumDifficultyArray)
+    } else {
+        randomNumber = Math.floor(Math.random() * enemyGuessMathHelper);
+        selecting = aiGuess[randomNumber]
+        targetGridItem = gridItems[selecting];
+    }
+    enemyGuessMathHelper--;
+    let row = parseInt(targetGridItem.dataset.row);
+    let col = parseInt(targetGridItem.dataset.column);
+
     if (targetGridItem.dataset.state === '1') {
         targetGridItem.style.backgroundColor = 'red';
-        shipdestroyer(aiGuess[randomNumber], targetGridItem.dataset.object, "plr", "ai")
+        shipdestroyer(selecting, targetGridItem.dataset.object, "plr", "ai");
+
+        if (aiDifficulty === "medium") {
+            let neighbors = getNeighboringTiles(row, col);
+            neighbors.forEach(tile => {
+                if (!mediumDifficultyArray.includes(tile) && (gridItems[tile].style.backgroundColor === '' || gridItems[tile].style.backgroundColor === 'green')) {
+                    mediumDifficultyArray.push(tile);
+                } 
+            });
+        }
     } else {
         targetGridItem.style.backgroundColor = 'gray';
     }
-    aiGuess[randomNumber] = aiGuess[enemyGuessMathHelper]
-};
+
+    aiGuess[randomNumber] = aiGuess[enemyGuessMathHelper];
+}
 
 function createFixedBox() {
     let battleshipsArray = Object.keys(battleshipInventory);
@@ -177,6 +223,7 @@ function newGame(difficulty) {
     battleshipShips.plr = {};
     battleshipShips.ai = {};
     gameStarted = false
+    aiDifficulty = difficulty
     gameWin = false
     gameStateElement.textContent = 'Placement';
     let previousSelection = document.querySelector('.box.selected');
@@ -199,27 +246,22 @@ function newGame(difficulty) {
 
     function enemyAIFunction() {
         if (difficulty) {
-            switch (difficulty) { // Still a W.I.P.
-                case "easy":
-                    aiGuess = [
-                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                        10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                        20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-                        30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-                        40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-                        50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-                        60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
-                        70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-                        80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
-                        90, 91, 92, 93, 94, 95, 96, 97, 98, 99
-                    ];
-                    enemyGuessMathHelper = 100
-                    break;
-                    
-                case "medium":
-                    break;
-                case "hard":
-                    break;
+            if (difficulty !== "hard") {
+                aiGuess = [
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                    10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                    20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                    30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+                    40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+                    50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+                    60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+                    70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+                    80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+                    90, 91, 92, 93, 94, 95, 96, 97, 98, 99
+                ];
+                enemyGuessMathHelper = 100
+            } else { // hard difficulty
+                
             }
         } else { // this should never happen, if it does the world will end
             return false;
@@ -254,7 +296,7 @@ window.onload = function() {
     createGrid('gridContainer2');
     gridContainer1 = document.getElementById("gridContainer1");
     gridContainer2 = document.getElementById("gridContainer2");
-    newGame('easy')
+    newGame('medium')
     let count = 0;
     for (let ship in battleships) {
         if (count >= 5) break;
