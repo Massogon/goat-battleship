@@ -195,7 +195,6 @@ function newGame(difficulty) {
     battleshipShips.plr = {};
     battleshipShips.ai = {};
     gameStarted = false
-    gameStateElement.textContent = 'Placement';
     let previousSelection = document.querySelector('.box.selected');
     if (previousSelection) {
         previousSelection.classList.remove('selected');
