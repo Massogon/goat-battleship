@@ -71,6 +71,26 @@ let shipName;
 let gameWin;
 const fixedWindow = document.querySelector('.fixed-window');
 
+// JavaScript code to fetch GIFs from Tenor API
+const tenorApiKey = 'AIzaSyDaq_tKOWNEGfkDfFy7kE_zx9vGg2n27TY';
+const tenorApiUrl = `https://tenor.googleapis.com/v2/search`;
+
+async function fetchGifs(query) {
+    const response = await fetch(`${tenorApiUrl}?q=${query}&key=${tenorApiKey}&limit=10`);
+    const data = await response.json();
+    return data.results;
+}
+
+// Javascript code to fetch weather from Weather API
+const weatherApiKey = 'ed4711d5fa994871a4a225102242105';
+const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather`;
+
+async function fetchWeather(city) {
+    const response = await fetch(`${weatherApiUrl}?q=${city}&appid=${weatherApiKey}&units=metric`);
+    const data = await response.json();
+    return data;
+}
+
 function createGrid(containerId) {
     let gridContainer = document.getElementById(containerId);
     for (let i = 0; i < 10; i++) {

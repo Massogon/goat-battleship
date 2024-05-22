@@ -1,0 +1,84 @@
+body {
+    background-color: #808080;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 4em;
+    color: black;
+    margin-bottom: 20px;
+    font-family: 'Comic Sans MS', cursive;
+}
+  
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(10, 2rem);
+    grid-template-rows: repeat(10, 2rem);
+    gap: .1rem;
+    border: 1px solid black;
+}
+  
+.grid-item {
+    background-color: rgb(55, 55, 255);
+    border: 1px solid black;
+    text-align: center;
+    width: 2rem;
+    height: 2rem;
+}
+  
+.grid-container + .grid-container {
+    margin-top: 20px;
+}
+  
+.container {
+    margin-top: 20px;
+    color: #000;
+}
+  
+#btnNewGame {
+    margin: 5px;
+    padding: 10px;
+    border: 5px solid #000;
+    background-color: #03A062;
+}
+
+.fixed-window {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    width: 20%;
+    height: 90%;
+    background-color: rgb(82, 82, 82);
+    border: 1px solid #000;
+    overflow-y: scroll;
+    padding: 1rem;
+    user-select: none;
+
+}
+
+.box {
+    background-color: #b5b5b5;
+    border: 2px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    color: #000;
+}
+
+.box:hover {
+    background-color: #9a9a9a;
+    border-color: #000;
+}
+
+.box.selected {
+    background-color: lime;
+    border-color: #000;
+    
+}
+
+.grid-item[data-state="1"] {
+    background-color: green;
+}
