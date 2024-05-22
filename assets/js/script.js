@@ -68,7 +68,6 @@ let aiGuess;
 let lastHoveredTile;
 let selectedShip;
 let shipName;
-let gameStateElement;
 let gameWin;
 const fixedWindow = document.querySelector('.fixed-window');
 
