@@ -11,42 +11,42 @@
     <link rel="stylesheet" href="./assets/css/mainMenu.css"/>
 </head>
 
-    <body>
-        <section class="hero is-fullheight" id="bg-img">
-            <div class="hero-body has-text-centered">
-                <div class="container">
-                    <div class="box bg-op">
-                        <h1 class="is-size-2">BATTLESHIP</h1>
-                        <div class="field my-5">
-                            <label class="label">Enter Username</label>
-                            <div class="control">
-                                <input class="input" type="text" placeholder="USERNAME">
-                            </div>
-                        </div>
-                        <div class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-space-evenly mt-5">
-                            <div class="select is-normal my-5">
-                                <select>
-                                    <option>Select Difficulty</option>
-                                    <hr class="dropdown-divider" />
-                                    <option>Easy</option>
-                                    <hr class="dropdown-divider" />
-                                    <option>Medium</option>
-                                    <hr class="dropdown-divider" />
-                                    <option>Hard</option>
-                                </select>
-                            </div>
-                            <a href="index.html">
-                                <button class="button is-normal m-5">NEW GAME</button>
-                            </a>
+<body>
+    <section class="hero is-fullheight" id="bg-img">
+        <div class="hero-body has-text-centered">
+            <div class="container">
+                <div class="box bg-op">
+                    <h1 class="is-size-2">BATTLESHIP</h1>
+                    <div class="field my-5">
+                        <label class="label">Enter Username</label>
+                        <div class="control">
+                            <input class="input" id="user-name" type="text" placeholder="USERNAME">
                         </div>
                     </div>
-                    <div class="box bg-op has-text-white is-inline-flex is-flex-direction-column mt-6">
-                        <p>--- <strong class="has-text-warning">BATTLESHIP</strong> by DEV TEAM 6</a> ---</p>
-                        <p>EST. 2024</p>
+                    <div class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-space-evenly mt-5">
+                        <div class="select is-normal my-5">
+                            <select id="difficulty-input">
+                                <option>Select Difficulty</option>
+                                <hr class="dropdown-divider" />
+                                <option>Easy</option>
+                                <hr class="dropdown-divider" />
+                                <option>Medium</option>
+                                <hr class="dropdown-divider" />
+                                <option>Hard</option>
+                            </select>
+                        </div>
+                        <button class="button is-normal m-5" id="startGame">NEW GAME</button>
                     </div>
                 </div>
+                <div class="box bg-op has-text-white is-inline-flex is-flex-direction-column mt-6">
+                    <p>--- <strong class="has-text-warning">BATTLESHIP</strong> by DEV TEAM 6</a> ---</p>
+                    <p>EST. 2024</p>
+                </div>
             </div>
-        </section>
-    </body>
+        </div>
+    </section>
+</body>
+
+<script src="./assets/js/menu.js"></script>
 
 </html>
