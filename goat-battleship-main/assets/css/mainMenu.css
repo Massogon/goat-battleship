@@ -1,0 +1,17 @@
+html {
+    width: 100%;
+    height: 100vh;
+}
+
+#bg-img {
+    background-image: url(../media/PH-hero.jpg);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.bg-op {
+    background-color: rgba(0, 0, 0, 0.825);
+}
