@@ -58,6 +58,7 @@ let battleshipShips = {
     ai: {},
 };
 
+let gameDifficulty 
 let battleshipInventory = {};
 let gameStarted;
 let gridContainer2;
@@ -70,6 +71,8 @@ let selectedShip;
 let shipName;
 let gameWin;
 const fixedWindow = document.querySelector('.fixed-window');
+
+const modal = document.querySelector('.modal');
 
 // JavaScript code to fetch GIFs from Tenor API
 const tenorApiKey = 'AIzaSyDaq_tKOWNEGfkDfFy7kE_zx9vGg2n27TY';
@@ -90,6 +93,11 @@ async function fetchWeather(city) {
     const data = await response.json();
     return data;
 }
+
+// Javascript code for Modal
+
+
+
 
 function createGrid(containerId) {
     let gridContainer = document.getElementById(containerId);
@@ -127,21 +135,41 @@ function createGrid(containerId) {
     }
 };
 
+let wins = localStorage.getItem('wins') ? parseInt(localStorage.getItem('wins')) : 0;
+let losses = localStorage.getItem('losses') ? parseInt(localStorage.getItem('losses')) : 0;
+
+function updateScore() {
+    document.getElementById('winsCount').textContent = wins;
+    document.getElementById('lossesCount').textContent = losses;
+    localStorage.setItem('wins', wins);
+    localStorage.setItem('losses', losses);
+}
+
 function shipDestroyer(num, name, player, winner) {
     battleshipShips[player][name] = battleshipShips[player][name].filter(number => number !== num);
     if (battleshipShips[player][name].length === 0) {
         delete battleshipShips[player][name]
 
         if ( Object.keys(battleshipShips[player]).length === 0) {
+            const gameOutcomeMessage = document.getElementById('gameOutcomeMessage');
             if (winner === 'plr') {
                 gameStateElement.textContent = "You win!";
+                wins++;
+                
             } else {
-                gameStateElement.textContent = "You lose.";
+                gameStateElement.textContent = "You lose!";
+                losses++;
+
             }
             gameStarted = false
+            gameWin = true
+            modal.classList.add('is-active');
+            updateScore();
         }
     }
 };
+
+updateScore();
 
 function enemyAttack() {
     const randomNumber = Math.floor(Math.random() * enemyGuessMathHelper)
@@ -195,6 +223,11 @@ function newGame(difficulty) {
     battleshipShips.plr = {};
     battleshipShips.ai = {};
     gameStarted = false
+    console.log(gameWin)
+    if (gameWin) {
+        modal.classList.remove('is-active');
+    }
+    gameWin = false
     let previousSelection = document.querySelector('.box.selected');
     if (previousSelection) {
         previousSelection.classList.remove('selected');
@@ -287,7 +320,8 @@ window.onload = function() {
     createGrid('gridContainer2');
     gridContainer1 = document.getElementById("gridContainer1");
     gridContainer2 = document.getElementById("gridContainer2");
-    newGame('easy')
+    gameDifficulty = localStorage.getItem('difficulty-input');
+    newGame(gameDifficulty)
     let count = 0;
     for (let ship in battleships) {
         if (count >= 5) break;
@@ -472,7 +506,7 @@ function previewShip(event) {
 };
 
 document.addEventListener('keydown', function(event) {
-    if ((event.key === 'r' || event.key === 'R') && !gameStarted) {
+    if ((event.key === 'r' || event.key === 'R') && !gameStarted && !gameWin) {
         removePreview();
         rotateShip();
         if (lastHoveredTile) {
@@ -498,4 +532,13 @@ function removePreview() {
 
 document.getElementById('btnNewGame').addEventListener('click', function() {
     newGame("easy"); // when click event on button is present newGame resets all states and allows new user input for difficulty 
+});
+
+document.getElementById('btnNewGame2').addEventListener('click', function() {
+    newGame("easy"); // when click event on button is present newGame resets all states and allows new user input for difficulty 
+});
+
+document.getElementById('btnMainMenu').addEventListener('click', function(){ 
+    // when click event on button is present Returns to main menu
+    window.location.herf = 'mainMenu.html';
 });

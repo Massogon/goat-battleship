@@ -46,6 +46,13 @@ h1 {
     background-color: #03A062;
 }
 
+#btnNewGame2 {
+    margin: 5px;
+    padding: 10px;
+    border: 5px solid #000;
+    background-color: #03A062;
+}
+
 .fixed-window {
     position: fixed;
     top: 50px;
@@ -82,3 +89,34 @@ h1 {
 .grid-item[data-state="1"] {
     background-color: green;
 }
+
+/* Modal */
+.modal {
+    display: none;
+}
+
+.modal.is-active {
+    display: block;
+}
+
+/* Modal specific styling */
+.modal-card-head, .modal-card-body, .modal-card-foot {
+    justify-content: center;
+    text-align: center;
+}
+
+.modal-card-title {
+    margin: 0 auto;
+}
+
+.modal-card-foot {
+    justify-content: space-around;
+}
+
+#btnMainMenu {
+    margin: 5px;
+    padding: 10px;
+    border: 5px solid #000;
+    background-color: #03A062;
+}
+
