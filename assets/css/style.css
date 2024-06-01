@@ -7,6 +7,10 @@ body {
     flex-direction: column;
 }
 
+html, body {
+    height: 100%;
+}
+
 h1 {
     font-size: 4em;
     color: #ffffff;
@@ -20,26 +24,36 @@ h1 {
     grid-template-rows: repeat(10, 2rem);
     gap: .1rem;
     border: 1px solid #000000;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
-
+  
 .grid-item {
-    background-color: #4390ff;
+
     border: 1px solid #ffffff;
     text-align: center;
     width: 2rem;
     height: 2rem;
 }
-
+  
 .grid-container + .grid-container {
     margin-top: 20px;
 }
   
 .container {
     margin-top: 20px;
-    color: #000000;
+    color: #000;
 }
   
 #btnNewGame {
+    margin: 5px;
+    padding: 10px;
+    border: 5px solid #000000;
+    background-color: #03A062;
+}
+
+#btnNewGame2 {
     margin: 5px;
     padding: 10px;
     border: 5px solid #000000;
@@ -57,7 +71,6 @@ h1 {
     overflow-y: scroll;
     padding: 1rem;
     user-select: none;
-
 }
 
 .box {
@@ -76,9 +89,57 @@ h1 {
 .box.selected {
     background-color: #00ff00;
     border-color: #000000;
-    
 }
 
 .grid-item[data-state="1"] {
     background-color: #008000;
+}
+
+/* Modal */
+.modal {
+    display: none;
+}
+.modal.is-active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/* Modal */
+
+.modal-card-head, .modal-card-body, .modal-card-foot {
+    justify-content: center;
+    text-align: center;
+}
+
+.modal-card-head {
+    display: block;
+    position: static;
+    color: white;
+    font-family: sans-serif;
+    font-size: 24px;
+}
+
+.modal-card {
+    width: 90%;
+    max-width: 600px;
+}
+
+.modal-background {
+    background-color: rgba(10, 10, 10, 0.86);
+}
+#btnMainMenu {
+    margin: 5px;
+    padding: 10px;
+    border: 5px solid #000;
+    background-color: #03A062;
+    text-decoration: none;
+    color: white;
+    font-family: sans-serif;
+    font-size: 24px;
 }
