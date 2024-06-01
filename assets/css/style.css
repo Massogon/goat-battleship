@@ -20,10 +20,12 @@ h1 {
     grid-template-rows: repeat(10, 2rem);
     gap: .1rem;
     border: 1px solid black;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
   
 .grid-item {
-    background-color: rgb(55, 55, 255);
     border: 1px solid black;
     text-align: center;
     width: 2rem;
