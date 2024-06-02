@@ -54,7 +54,7 @@ async function fetchGifs(query) {
 }
 
 const weatherApiKey = "4c0f8c4c326f4c32a5754012243105"; // Your WeatherAPI key
-const weatherApiUrl = `http://api.weatherapi.com/v1/current.json`;
+const weatherApiUrl = `https://api.weatherapi.com/v1/current.json`;
 
 // fetch data from weather app api
 async function getWeather(lat, lon) {
