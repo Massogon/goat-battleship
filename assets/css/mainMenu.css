@@ -13,7 +13,7 @@
 
 /* Sets h1 text font */
 h1 {
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'Comic Sans MS', Arial, Helvetica, sans-serif;
 }
 
 /* Makes box color transparent */
