@@ -60,7 +60,6 @@ async function getWeather(lat, lon) {
       `${weatherApiUrl}?key=${weatherApiKey}&q=${lat},${lon}&aqi=no`
     );
     const data = await response.json();
-    console.log("Weather API response:", data); // Debug log
     return data;
   } catch (error) {
     console.error("Error fetching weather data:", error);
