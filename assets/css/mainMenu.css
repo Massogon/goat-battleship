@@ -1,17 +1,24 @@
-html {
-    width: 100%;
-    height: 100vh;
-}
-
-#bg-img {
-    background-image: url(../media/PH-hero.jpg);
-    height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+html{
     overflow: hidden;
 }
 
+#background-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-image: url(../media/give-us-an-a++++.jpg);
+    height: 100dvh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+h1 {
+    font-family: 'Comic Sans MS', cursive;
+}
+
 .bg-op {
-    background-color: rgba(0, 0, 0, 0.825);
+    background-color: #000000d2;
 }
