@@ -1,7 +1,4 @@
-html{
-    overflow: hidden;
-}
-
+/* Sets bg vid attributes */
 #background-video {
     position: absolute;
     width: 100%;
@@ -14,11 +11,12 @@ html{
     background-size: cover;
 }
 
-
+/* Sets h1 text font */
 h1 {
     font-family: 'Comic Sans MS', cursive;
 }
 
+/* Makes box color transparent */
 .bg-op {
     background-color: #000000d2;
 }
