@@ -917,5 +917,5 @@ document.getElementById("btnNewGame2").addEventListener("click", function () {
 
 // when click event on button is present Returns to main menu
 document.getElementById("btnMainMenu").addEventListener("click", function () {
-  window.location.href = "mainMenu.html";
+  window.location.href = "index.html";
 });
