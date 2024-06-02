@@ -3,26 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bulma CDN link -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+<!-- Custom CSS link -->
 <link rel="stylesheet" href="./assets/css/style.css">
 <title>10x10 Grid</title>
 </head>
 <body>
 <h1>BATTLESHIP!!!!!!</h1>
 
-<div class="">
+<!-- Section dedicated to storing/displaying game board -->
+<div>
   <div class="grid-container" id="gridContainer1"></div>
   <div class="grid-container" id="gridContainer2"></div>
 </div>
 
-<div class="">
+<!-- New game button -->
+<div>
   <button id="btnNewGame">New Game</button>
 </div>
 
-<div class="gameState">Placement</div>
-
-<div class="fixed-window">
-  <h2>Fixed Window</h2>
+<!-- Displays a container for placeable ships.  Once all ships are placed container is removed -->
+<div id="fixed-window-id">
+  <h2></h2>
 </div>
 
 <!-- modal -->
@@ -31,6 +34,7 @@
   <div class="modal-background" ></div>
   <div class="modal-card">
       <header class="modal-card-head">
+        <!-- Modal title -->
         <h3 class="title mb-6">Game Over</h3>
         <div class="scoreboard">
           <p>Wins: <span id="winsCount">0</span></p>
@@ -44,11 +48,14 @@
       </section>
 
       <footer class="modal-card-foot is-flex is-justify-content-space-around">
+        <!-- Resets game board -->
         <button id="btnNewGame2">New Game</button>
+        <!-- loads main menu -->
         <button id="btnMainMenu">Main Menu</button>
       </footer>
 </div>
 
+<!-- JavaScript link (script.js) -->
 <script src="./assets/js/script.js"></script>
 </body>
 </html>

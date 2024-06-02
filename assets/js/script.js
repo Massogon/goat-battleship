@@ -10,8 +10,11 @@ let battleshipShips = {
   plr: {},
   ai: {},
 };
-let battleshipShips2 = {};
 
+let debounce = false
+let battleshipShips2 = {};
+let timer1;
+let timer2;
 let battleshipInventory = {};
 let gameStarted;
 let gridContainer2;
@@ -27,7 +30,6 @@ let aiDifficulty;
 let mediumDifficultyArray = [];
 let hardDifficultyObject1 = {};
 let hardDifficultyObject2 = {};
-let debounce = false;
 let wins = localStorage.getItem("wins")
   ? parseInt(localStorage.getItem("wins"))
   : 0;
@@ -35,13 +37,14 @@ let losses = localStorage.getItem("losses")
   ? parseInt(localStorage.getItem("losses"))
   : 0;
 
-const fixedWindow = document.querySelector(".fixed-window");
+const fixedWindow = document.getElementById("fixed-window-id");
 const modal = document.querySelector(".modal");
 
 // JavaScript code to fetch GIFs from Tenor API
 const tenorApiKey = "AIzaSyDaq_tKOWNEGfkDfFy7kE_zx9vGg2n27TY";
 const tenorApiUrl = `https://tenor.googleapis.com/v2/search`;
 
+// fetch data from tenor api
 async function fetchGifs(query) {
   const response = await fetch(
     `${tenorApiUrl}?q=${query}&key=${tenorApiKey}&limit=10`
@@ -53,45 +56,61 @@ async function fetchGifs(query) {
 const weatherApiKey = "4c0f8c4c326f4c32a5754012243105"; // Your WeatherAPI key
 const weatherApiUrl = `http://api.weatherapi.com/v1/current.json`;
 
+// fetch data from weather app api
 async function getWeather(lat, lon) {
   try {
     const response = await fetch(
       `${weatherApiUrl}?key=${weatherApiKey}&q=${lat},${lon}&aqi=no`
     );
     const data = await response.json();
-    console.log("Weather API response:", data); // Debug log
     return data;
   } catch (error) {
     console.error("Error fetching weather data:", error);
   }
 }
 
+// Pulls data for local time from weather api
 function getLocalTime(localTimeStr) {
   return new Date(localTimeStr);
 }
 
+// Returns value based on time of day 
 function getTimeOfDay(localTime) {
   const hours = localTime.getHours();
-
+  const gridItems = document.querySelectorAll('.grid-item');
+  gridItems.forEach(container => {
+    container.classList.add('grid-container-invisible');
+  });
   if (hours >= 6 && hours < 12) {
     return "morning";
-  } else if (hours >= 12 && hours < 18) {
+  } else if (hours >= 12 && hours < 21) {
     return "afternoon";
   } else {
     return "night";
   }
 }
 
+// links image to time of day value
 function getBoardSkins(timeOfDay) {
   const skins = {
-    morning: 'url("https://cdn.discordapp.com/attachments/1237247690560110732/1245998790012309565/DALLE_2024-05-31_00.14.10_-_A_serene_morning_ocean_view_with_the_sun_rising_calm_waves_and_a_warm_glow_reflecting_on_the_water.webp?ex=665b730d&is=665a218d&hm=c9273f1c54d9a3590dc9e6a9b8446da29f278fedd701de5a9c78c6944bc075ad&")',
-    afternoon: 'url("https://cdn.discordapp.com/attachments/1237247690560110732/1246213055289884693/DALLE_2024-05-31_14.25.30_-_A_bright_mid-day_ocean_view_with_the_sun_high_in_the_sky_clear_blue_water_and_gentle_waves.webp?ex=665b91d9&is=665a4059&hm=2954ca445bd260d1fea69c19b8e3f658df0237eb7ec4522596b6558dcb2ce940&")',
-    night: 'url("https://cdn.discordapp.com/attachments/1237247690560110732/1245999332650516542/DALLE_2024-05-31_00.16.20_-_A_tranquil_night_ocean_view_with_a_clear_starry_sky_a_full_moon_reflecting_on_the_water_and_gentle_waves.webp?ex=665b738e&is=665a220e&hm=cd6bea483eac75d47ac4c67eb9b9a769a18ebfcd48408f5565cc0a22f8087623&")'
+    morning: [ // Top is enemy board, bottom is players board.
+      'url("./assets/media/morningSkin.png")',
+      'url("./assets/media/morningSkin.png")'
+    ],
+    afternoon: [
+      'url("./assets/media/afternoonSkin.png")',
+      'url("./assets/media/afternoonSkin.png")'
+    ],
+    night: [
+      'url("./assets/media/nightSkin.png")',
+      'url("./assets/media/nightSkin.png")'
+    ]
   };
 
   return skins[timeOfDay];
 }
 
+// Displays image on game board based on time of day
 async function setBoardSkins(lat, lon, overrideTimeOfDay = null) {
   const weatherData = await getWeather(lat, lon);
   if (!weatherData) {
@@ -111,18 +130,16 @@ async function setBoardSkins(lat, lon, overrideTimeOfDay = null) {
 
   const boardSkin = getBoardSkins(timeOfDay);
 
-  console.log("Time of Day:", timeOfDay);
-  console.log("Board Skin:", boardSkin);
-
   const gridContainer1 = document.getElementById('gridContainer1');
   const gridContainer2 = document.getElementById('gridContainer2');
 
   if (gridContainer1 && gridContainer2) {
-    gridContainer1.style.backgroundImage = boardSkin;
-    gridContainer2.style.backgroundImage = boardSkin;
+    gridContainer1.style.backgroundImage = boardSkin[0];
+    gridContainer2.style.backgroundImage = boardSkin[1];
   }
 }
 
+// Passes lat lon data to be used in setBoardSkins function.  Runs after allowing location 
 function getLocationAndSetBoardSkins(overrideTimeOfDay = null) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(position => {
@@ -137,12 +154,7 @@ function getLocationAndSetBoardSkins(overrideTimeOfDay = null) {
   }
 }
 
-// Example usage for testing different times of day
-getLocationAndSetBoardSkins(); // Use this for actual geolocation based time of day
-// getLocationAndSetBoardSkins("morning"); // For testing morning skin
-// getLocationAndSetBoardSkins("afternoon"); // For testing afternoon skin
-// getLocationAndSetBoardSkins("night"); // For testing night skin
-
+// Creates game board grid
 function createGrid(containerId) {
   let gridContainer = document.getElementById(containerId);
 
@@ -158,6 +170,7 @@ function createGrid(containerId) {
     }
   }
 
+  // Handles player attack
   if (containerId === "gridContainer1") {
     gridContainer.addEventListener("click", function (event) {
       if (event.target.classList.contains("grid-item") && gameStarted) {
@@ -166,9 +179,11 @@ function createGrid(containerId) {
         }
         let row = parseInt(event.target.dataset.row);
         let col = parseInt(event.target.dataset.column);
+        // Checks if shot already 
         if (event.target.dataset.state === "0") {
           debounce = true;
           event.target.dataset.state = 1;
+          // Checks if ship is hit and registers accordingly 
           if (enemyBoard[row][col] === 1) {
             event.target.style.backgroundColor = "red";
             const position = row * 10 + col;
@@ -177,6 +192,7 @@ function createGrid(containerId) {
             event.target.style.backgroundColor = "gray";
           }
           const timer = Math.floor(Math.random() * 100) + 100;
+          // Timer between player shooting and enemy shooting
           setTimeout(function () {
             enemyAttack();
             debounce = false;
@@ -187,6 +203,7 @@ function createGrid(containerId) {
   }
 }
 
+// Saves win/loss to local storage
 function updateScore() {
     document.getElementById('winsCount').textContent = wins;
     document.getElementById('lossesCount').textContent = losses;
@@ -194,22 +211,31 @@ function updateScore() {
     localStorage.setItem('losses', losses);
 }
 
+// Removes data about ships and determines winner
 function shipDestroyer(num, name, player, winner) {
   battleshipShips[player][name] = battleshipShips[player][name].filter(
     (number) => number !== num
   );
+
+  // Checks length of ship and deletes if empty 
   if (battleshipShips[player][name].length === 0) {
     delete battleshipShips[player][name];
+    // Checks to see if targeting player and difficulty is hard
     if (player === "plr" && aiDifficulty === "hard") {
+      // Loops through the length of current ship being attacked 
       for (let i = 0; i < battleshipShips2[name].length; i++) {
+        // Stores position of ship grid
         const currentItem = battleshipShips2[name][i];
+        // Checks to see if ship piece is in variable hardDifficultyObject2 (If ai has shot this area)
         const exists = currentItem in hardDifficultyObject2;
         if (exists) {
+          // Removes each ship piece and adjacent tiles from both objects
           for (let j = 0; j < hardDifficultyObject2[currentItem].length; j++) {
             hardDifficultyObject1[hardDifficultyObject2[currentItem][j]] =
               hardDifficultyObject1[
                 hardDifficultyObject2[currentItem][j]
               ].filter((item) => item !== currentItem);
+              // If adjacent tile is empty delete object
             if (
               hardDifficultyObject1[hardDifficultyObject2[currentItem][j]]
                 .length === 0
@@ -219,16 +245,17 @@ function shipDestroyer(num, name, player, winner) {
               ];
             }
           }
+          // Delete shot tile
           delete hardDifficultyObject2[currentItem];
         }
       }
     }
+    // Checks if all ships destroyed 
     if (Object.keys(battleshipShips[player]).length === 0) {
+      // Determines winner
       if (winner === "plr") {
-        gameStateElement.textContent = "You win!";
         wins++;
       } else {
-        gameStateElement.textContent = "You lose.";
         losses++;
       }
       gameStarted = false;
@@ -239,13 +266,14 @@ function shipDestroyer(num, name, player, winner) {
   }
 }
 
+// Check to see if value of neighboring tile is within bounds of game board 
 function getNeighboringTiles(row, col) {
   let neighbors = [];
   const directions = [
-    [-1, 0],
-    [1, 0], // Up, Down
-    [0, -1],
-    [0, 1], // Left, Right
+    [-1, 0], // Up
+    [1, 0], // Down
+    [0, -1], // Left
+    [0, 1], // Right
   ];
 
   directions.forEach((direction) => {
@@ -259,7 +287,9 @@ function getNeighboringTiles(row, col) {
   return neighbors;
 }
 
+// Handles enemy attacks
 function enemyAttack() {
+  // Checks to see if game has started
   if (!gameStarted) {
     return;
   }
@@ -267,14 +297,18 @@ function enemyAttack() {
   let targetGridItem;
   let randomNumber;
   let selecting;
+  // Shoots around previously hit ships
   if (aiDifficulty === "medium" && mediumDifficultyArray.length > 0) {
     randomNumber = Math.floor(Math.random() * mediumDifficultyArray.length);
     targetGridItem = gridItems[mediumDifficultyArray[randomNumber]];
     selecting = mediumDifficultyArray[randomNumber];
     mediumDifficultyArray.splice(randomNumber, 1);
     randomNumber = aiGuess.indexOf(selecting);
+    // Attacks for hard 
   } else if (aiDifficulty === "hard") {
+    // Check for leads if no leads run if statement
     if (Object.keys(hardDifficultyObject1).length === 0) {
+      // Ai guess has 0 for every cell on game board
       aiGuess = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -291,8 +325,8 @@ function enemyAttack() {
         "aircraftCarrier",
       ];
 
+      // Checks every possible location a ship can be in and increments in ai guess 
       function shootPlayer(shipSize) {
-        let listOfPossibleShips = [];
         for (let row = 0; row < 10; row++) {
           for (let col = 0; col < 10; col++) {
             let canShoot = true;
@@ -356,24 +390,30 @@ function enemyAttack() {
         }
       }
 
+      // If ship not sunk add to list of possible board locations (aiGuess)
       for (let i = 0; i <= 4; i++) {
         if (battleshipShips["plr"][shipNames[i]]) {
           shootPlayer(shipSizes[i]);
         }
       }
+
       let maxNumber = Math.max(...aiGuess);
       let positions = [];
       for (let i = 0; i < 100; i++) {
-        // Finds largest number in aiGuess
+        // Finds largest number in aiGuess 
         if (aiGuess[i] === maxNumber) {
           positions.push(i);
         }
       }
+
+      // Selects area to shoot 
       randomNumber = Math.floor(Math.random() * positions.length);
       targetGridItem = gridItems[positions[randomNumber]];
       selecting = positions[randomNumber];
+      // Hard ai if there is a lead
     } else {
       const keys = Object.keys(hardDifficultyObject1);
+      // Picks random adjacent tile of previous shoot ship tiles 
       const randomIndex = Math.floor(Math.random() * keys.length);
       selecting = keys[randomIndex];
       targetGridItem = gridItems[selecting];
@@ -394,6 +434,7 @@ function enemyAttack() {
         selecting = parseInt(selecting);
       }
     }
+  // Attack for easy or if medium ai does not have a lead
   } else {
     randomNumber = Math.floor(Math.random() * enemyGuessMathHelper);
     selecting = aiGuess[randomNumber];
@@ -441,6 +482,7 @@ function enemyAttack() {
   aiGuess[randomNumber] = aiGuess[enemyGuessMathHelper];
 }
 
+// Creates window for stored ships awaiting placement
 function createFixedBox() {
   let battleshipsArray = Object.keys(battleships);
 
@@ -451,21 +493,25 @@ function createFixedBox() {
     fixedWindow.appendChild(newItem);
   }
 
+  // Checks if ship is selected
   fixedWindow.addEventListener("click", function (event) {
     let target = event.target;
     if (event.target.parentNode.classList.contains("box")) {
       target = event.target.parentNode;
     }
 
+    // Ensures click event contains a ship value
     if (target.classList.contains("box")) {
       let previousSelection = document.querySelector(".box.selected");
       if (previousSelection) {
         previousSelection.classList.remove("selected");
       }
 
+      // Applies selected css per event 
       target.classList.add("selected");
       selectedShip = battleships[target.textContent];
       shipName = target.textContent;
+      // When hovering over game board cells shows ship preview.  If mouse out of bounds remove preview. Clicking attempts to place ship.
       gridContainer2.addEventListener("mouseover", previewShip);
       gridContainer2.addEventListener("mouseout", removePreview);
       gridContainer2.addEventListener("click", placeShip);
@@ -473,7 +519,10 @@ function createFixedBox() {
   });
 }
 
+// Resets majority of game data upon clicking new game
 function newGame(difficulty) {
+  document.getElementById("fixed-window-id").classList.add("fixed-window");
+
   battleshipShips.plr = {};
   battleshipShips.ai = {};
   battleshipShips2 = {};
@@ -484,7 +533,6 @@ function newGame(difficulty) {
     modal.classList.remove("is-active");
   }
   gameWin = false;
-  gameStateElement.textContent = "Placement";
   let previousSelection = document.querySelector(".box.selected");
   if (previousSelection) {
     previousSelection.classList.remove("selected");
@@ -533,22 +581,26 @@ function newGame(difficulty) {
   lastHoveredTile = null;
 }
 
+// This runs instantly, do NOT make another window.onload
 window.onload = function () {
-  // This runs instantly, do NOT make another window.onload
-  gameStateElement = document.querySelector(".gameState");
+  // Creates ai game board
   createGrid("gridContainer1");
+  // Creates player game board
   createGrid("gridContainer2");
   gridContainer1 = document.getElementById("gridContainer1");
   gridContainer2 = document.getElementById("gridContainer2");
+  // Sets ai difficulty based on user input for difficulty 
   aiDifficulty = localStorage.getItem("difficultyInput");
+  // Starts new game
   newGame();
-
-  gridContainer2.addEventListener("mouseover", previewShip);
-  gridContainer2.addEventListener("mouseout", removePreview);
+  // Use this for actual geolocation based time of day
+  getLocationAndSetBoardSkins();
 };
 
+// Checks to see if ship can be placed and places ship
 function placeShip(event) {
   let target = event.target;
+  // Checks for left click event in player game board
   if (
     event.type === "click" &&
     target.classList.contains("grid-item") &&
@@ -557,6 +609,7 @@ function placeShip(event) {
     let row = parseInt(target.dataset.row);
     let column = parseInt(target.dataset.column);
     let canPlace = true;
+    // Checks to see if attempt to place ship is out of bounds
     for (let i = 0; i < selectedShip.length; i++) {
       for (let j = 0; j < selectedShip[i].length; j++) {
         if (selectedShip[i][j]) {
@@ -574,6 +627,7 @@ function placeShip(event) {
               column + j
             }"]`
           );
+          // Checks if a ship has been placed already in desired cell 
           if (cell && cell.dataset.state === "1") {
             canPlace = false;
             break;
@@ -583,6 +637,7 @@ function placeShip(event) {
       if (!canPlace) break;
     }
 
+    // If ship is placeable then place ship
     if (canPlace) {
       for (let i = 0; i < selectedShip.length; i++) {
         for (let j = 0; j < selectedShip[i].length; j++) {
@@ -592,9 +647,11 @@ function placeShip(event) {
                 column + j
               }"]`
             );
+            // Creates array to store specific ship tiles 
             if (!battleshipShips.plr[shipName]) {
               battleshipShips.plr[shipName] = [];
             }
+            // Creates array to store specific ship tiles
             if (!battleshipShips2[shipName]) {
               battleshipShips2[shipName] = [];
             }
@@ -603,6 +660,7 @@ function placeShip(event) {
               parseInt(cell.dataset.row) * 10 + parseInt(cell.dataset.column);
             battleshipShips.plr[shipName].push(position);
             battleshipShips2[shipName].push(position);
+            // Displays placed ship 
             if (cell) {
               cell.dataset.state = 1;
               cell.dataset.object = shipName;
@@ -616,11 +674,17 @@ function placeShip(event) {
         }
       }
 
+      // Starts game when all ships have been placed
       if (!gameStarted && fixedWindow.childNodes.length === 1) {
         gameStarted = true;
+        // Places enemy ships
         enemyShipPlacer();
-        gameStateElement.textContent = "Game started";
+        // Removes text in fixed window
+        fixedWindow.innerHTML = "<h2></h2>";
+        // Makes fixed window invisible 
+        document.getElementById("fixed-window-id").classList.remove("fixed-window");
       }
+      // Removes event listener
       gridContainer2.removeEventListener("mouseover", previewShip);
       gridContainer2.removeEventListener("mouseout", removePreview);
       gridContainer2.removeEventListener("click", placeShip);
@@ -629,6 +693,7 @@ function placeShip(event) {
   }
 }
 
+// Places enemy ship 
 function enemyShipPlacer() {
   const shipSizes = [2, 3, 3, 4, 5];
   const shipNames = [
@@ -640,9 +705,11 @@ function enemyShipPlacer() {
   ];
   let numb = 0;
 
+  // Loops through ships and places each ship
   function placeEnemyShip(shipSize) {
     let listOfPossibleShips = [];
 
+    // Checks all grid locations 
     for (let row = 0; row < enemyBoard.length; row++) {
       for (let col = 0; col < enemyBoard[row].length; col++) {
         let canPlace = true;
@@ -655,6 +722,7 @@ function enemyShipPlacer() {
               break;
             }
           }
+          // If it can be place adds to list of possible ship locations
           if (canPlace) {
             let temp = [];
             for (let i = 0; i < shipSize; i++) {
@@ -674,6 +742,7 @@ function enemyShipPlacer() {
               break;
             }
           }
+          // If it can be place adds to list of possible ship locations
           if (canPlace) {
             let temp = [];
             for (let i = 0; i < shipSize; i++) {
@@ -693,6 +762,7 @@ function enemyShipPlacer() {
               break;
             }
           }
+          // If it can be place adds to list of possible ship locations
           if (canPlace) {
             let temp = [];
             for (let i = 0; i < shipSize; i++) {
@@ -712,6 +782,7 @@ function enemyShipPlacer() {
               break;
             }
           }
+          // If it can be place adds to list of possible ship locations
           if (canPlace) {
             let temp = [];
             for (let i = 0; i < shipSize; i++) {
@@ -723,15 +794,18 @@ function enemyShipPlacer() {
       }
     }
 
+    // Creates object with array if object does not exist
     if (!battleshipShips.ai[shipNames[numb]]) {
       battleshipShips.ai[shipNames[numb]] = [];
     }
 
     let position;
+    // Picks ship location from list of possible locations
     const ship =
       listOfPossibleShips[
         Math.floor(Math.random() * listOfPossibleShips.length)
       ];
+    // Places ship
     for (let i = 0; i < shipSize; i++) {
       let square = gridContainer1.querySelector(
         `.grid-item[data-row="${ship[i][0]}"][data-column="${ship[i][1]}"]`
@@ -743,14 +817,19 @@ function enemyShipPlacer() {
     }
     numb++;
   }
+
+  // Loops through each ship to place it
   shipSizes.forEach((shipSize) => {
     placeEnemyShip(shipSize);
   });
 }
 
+// Displays preview of ship location prior to placement
 function previewShip(event) {
   let target = event.target;
+  // Checks to see if ship exist
   if (typeof selectedShip !== "undefined") {
+    // Checks to see if mouse is in player grid 
     if (
       selectedShip &&
       target.classList.contains("grid-item") &&
@@ -759,8 +838,9 @@ function previewShip(event) {
       lastHoveredTile = event;
       let row = parseInt(target.dataset.row);
       let column = parseInt(target.dataset.column);
-      let overlaps = false;
+
       let offBoard = false;
+      // // Checks to see if selected ship is placeable in desired cells
       for (let i = 0; i < selectedShip.length; i++) {
         for (let j = 0; j < selectedShip[i].length; j++) {
           if (selectedShip[i][j]) {
@@ -769,9 +849,10 @@ function previewShip(event) {
                 column + j
               }"]`
             );
+          
             if (cell) {
+              // Checks to see if there are overlaps 
               if (cell.dataset.state === "1") {
-                overlaps = true;
                 cell.style.backgroundColor = "red";
               } else if (cell.style.backgroundColor !== "red") {
                 cell.style.backgroundColor = "lightgray";
@@ -783,6 +864,7 @@ function previewShip(event) {
         }
       }
 
+      // Changes color if ship is off game board
       if (offBoard) {
         let cells = document.querySelectorAll("#gridContainer2 .grid-item");
         cells.forEach((cell) => {
@@ -795,6 +877,7 @@ function previewShip(event) {
   }
 }
 
+// Rotates ship when pressing r key
 document.addEventListener("keydown", function (event) {
   if ((event.key === "r" || event.key === "R") && !gameStarted && !gameWin) {
     removePreview();
@@ -805,6 +888,7 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
+// Rotates ship data 
 function rotateShip() {
   if (selectedShip) {
     selectedShip = selectedShip[0].map((_, colIndex) =>
@@ -813,6 +897,7 @@ function rotateShip() {
   }
 }
 
+// Removes preview 
 function removePreview() {
   let cells = document.querySelectorAll("#gridContainer2 .grid-item");
   cells.forEach((cell) => {
@@ -820,15 +905,17 @@ function removePreview() {
   });
 }
 
+// when click event on button is present newGame resets all states and allows new user input for difficulty
 document.getElementById("btnNewGame").addEventListener("click", function () {
-  newGame(aiDifficulty); // when click event on button is present newGame resets all states and allows new user input for difficulty
+  newGame(aiDifficulty); 
 });
 
+// when click event on button is present newGame resets all states and allows new user input for difficulty
 document.getElementById("btnNewGame2").addEventListener("click", function () {
-  newGame(aiDifficulty); // when click event on button is present newGame resets all states and allows new user input for difficulty
+  newGame(aiDifficulty);
 });
 
+// when click event on button is present Returns to main menu
 document.getElementById("btnMainMenu").addEventListener("click", function () {
-  // when click event on button is present Returns to main menu
   window.location.href = "mainMenu.html";
 });
