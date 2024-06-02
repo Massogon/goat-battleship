@@ -1,61 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bulma CDN link -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
-<!-- Custom CSS link -->
-<link rel="stylesheet" href="./assets/css/style.css">
-<title>10x10 Grid</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Dev Team BATTLESHIP</title>
+    <!-- Bulma CDN link -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" />
+    <!-- Custom CSS link -->
+    <link rel="stylesheet" href="./assets/css/mainMenu.css" />
 </head>
+
 <body>
-<h1>BATTLESHIP!!!!!!</h1>
-
-<!-- Section dedicated to storing/displaying game board -->
-<div>
-  <div class="grid-container" id="gridContainer1"></div>
-  <div class="grid-container" id="gridContainer2"></div>
-</div>
-
-<!-- New game button -->
-<div>
-  <button id="btnNewGame">New Game</button>
-</div>
-
-<!-- Displays a container for placeable ships.  Once all ships are placed container is removed -->
-<div id="fixed-window-id">
-  <h2></h2>
-</div>
-
-<!-- modal -->
-<div class= "modal">
-
-  <div class="modal-background" ></div>
-  <div class="modal-card">
-      <header class="modal-card-head">
-        <!-- Modal title -->
-        <h3 class="title mb-6">Game Over</h3>
-        <div class="scoreboard">
-          <p>Wins: <span id="winsCount">0</span></p>
-          <p>Loses: <span id="lossesCount">0</span></p>
+    <section class="hero is-fullheight">
+        <video id="background-video" autoplay loop muted></video>
+        <div class="hero-body has-text-centered">
+            <!-- Main container for main menu page -->
+            <div class="container">
+                <div class="box bg-op">
+                    <!-- Title -->
+                    <h1 class="is-size-2 has-text-white">BATTLESHIP</h1>
+                    <div class="field my-5">
+                        <!-- Input field for user name -->
+                        <label class="label">Enter Username</label>
+                        <div class="control">
+                            <input class="input" id="user-name" type="text" placeholder="USERNAME">
+                        </div>
+                    </div>
+                    <div class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-space-evenly mt-5">
+                        <div class="select is-normal my-5">
+                            <!-- Drop down window for selecting difficulty -->
+                            <select id="difficultyInput">
+                                <option>Select Difficulty</option>
+                                <hr class="dropdown-divider" />
+                                <option>easy</option>
+                                <hr class="dropdown-divider" />
+                                <option>medium</option>
+                                <hr class="dropdown-divider" />
+                                <option>hard</option>
+                            </select>
+                        </div>
+                        <!-- Button linked to index.html (game board page) -->
+                        <button class="button is-normal m-5" id="startGame">NEW GAME</button>
+                    </div>
+                </div>
+                <!-- Faux footer -->
+                <div class="box bg-op has-text-white is-inline-flex is-flex-direction-column mt-6">
+                    <p>--- <strong class="has-text-warning">BATTLESHIP</strong> by DEV TEAM 6 ---</p>
+                    <p>EST. 2024</p>
+                </div>
+            </div>
         </div>
-      </header>
-      
-      <section class="modal-card-body">
-        <h3 id="gameOutcomeMessage" class="is-size-4 has-text-centered"></h3>
-        <h3 class="is-size-4 has-text-centered">What would you like to do next?</h3>
-      </section>
-
-      <footer class="modal-card-foot is-flex is-justify-content-space-around">
-        <!-- Resets game board -->
-        <button id="btnNewGame2">New Game</button>
-        <!-- loads main menu -->
-        <button id="btnMainMenu">Main Menu</button>
-      </footer>
-</div>
-
-<!-- JavaScript link (script.js) -->
-<script src="./assets/js/script.js"></script>
+    </section>
+    <!-- JavaScript link (menu.js) -->
+    <script src="./assets/js/menu.js"></script>
 </body>
+
 </html>

@@ -20,7 +20,7 @@ startGame.addEventListener('click', function(event) {
     localStorage.setItem('nameInput', userName);
     localStorage.setItem('difficultyInput', userDifficulty);
 
-    window.location.href = "index.html";
+    window.location.href = "gameBoard.html";
 });
 
 let count = 0;
