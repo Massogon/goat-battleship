@@ -21,14 +21,19 @@
 <p> Once game is either won or lost the scoreboard (modal) will display stating game over, your wins and losses based on difficulty and username, new game button, and main menu button.  Pressing new game button keeps your username and difficulty and will remove all hits/misses and ships from grid.  The available player ship window will also appear to allow you to place ships again.  Pressing main menu button will return you to main menu page.  If you would like to change difficulty after game please press main menu button while modal is active.  
 
 <p> <strong> Game states should render as such: </strong>
+<br>
 
 <img src="./assets/media/battleshipMainMenuState.png" width="300" height="150" alt="Battleship main menu state">
+<br>
 
 <img src="./assets/media/battleshipGameBoardState.png" width="300" height="150" alt="Battleship game board state">
+<br>
 
 <img src="./assets/media/battleshipStartState.png" width="300" height="150" alt="Battleship game start state">
+<br>
 
 <img src="./assets/media/battleshipModalState.png" width="300" height="150" alt="Battleship modal state">
+<br>
 
 ## Technologies used 
 
