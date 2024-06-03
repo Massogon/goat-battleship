@@ -15,7 +15,7 @@ h1 {
     font-size: 4em;
     color: #ffffff;
     margin-bottom: 20px;
-    font-family: 'Comic Sans MS', Arial, Helvetica, sans-serif;
+    font-family: 'Comic Sans MS', sans-serif;
 }
 
 /* Contains grid items and displays them as a grid */
@@ -61,7 +61,7 @@ h1 {
     background-color: #03A062;
     text-decoration: none;
     color: white;
-    font-family: sans-serif, Arial, Helvetica;
+    font-family: sans-serif;
     font-size: 24px;
     margin-top: 15px;
 }
@@ -74,7 +74,7 @@ h1 {
     background-color: #03A062;
     text-decoration: none;
     color: white;
-    font-family: sans-serif, Arial, Helvetica;
+    font-family: sans-serif;
     font-size: 24px;
 }
 
@@ -145,7 +145,7 @@ h1 {
     display: block;
     position: static;
     color: white;
-    font-family: sans-serif, Arial, Helvetica;
+    font-family: sans-serif;
     font-size: 24px;
 }
 
@@ -166,6 +166,6 @@ h1 {
     background-color: #03A062;
     text-decoration: none;
     color: white;
-    font-family: sans-serif, Arial, Helvetica;
+    font-family: sans-serif;
     font-size: 24px;
 }
